@@ -1,6 +1,7 @@
 <?php
 
 namespace app\controllers;
+//namespace app\models;
 
 use app\models\A_diary;
 use app\models\A_diary_search;
@@ -393,8 +394,8 @@ where 1=1";
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 //        debug('1111111111111');
             $sql = "SELECT projects, plan_status, year, month, txt, speed
-FROM vw_plans 
-where 1=1";
+            FROM vw_plans 
+            where 1=1";
 
             if (!empty($model->projects)) {
                 $sql = $sql . ' and id_project =' . "'" . $model->projects . "'";

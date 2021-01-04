@@ -35,7 +35,7 @@ $arr = ['Выбор года','2018','2019'];
 
     <?= $form->field($model, 'speed')->label('Степень срочности')  -> textInput() -> dropDownList (ArrayHelper::map(
         app\models\plan::findbysql('
-       select id, speed from vw_plans group by speed')
+       select id, speed from vw_plans group by id,speed')
             ->all(), 'id', 'speed'),
         ['prompt' => 'Выбор степени срочности',]) ?>
 
