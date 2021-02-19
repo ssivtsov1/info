@@ -61,4 +61,20 @@ class Plan extends \yii\db\ActiveRecord
     {
         return Yii::$app->get('db_mysql');
     }
+
+    public function rules()
+    {
+        return [
+
+            [['id','projects','plan_status', 'year', 'month','txt','speed',
+            ], 'safe'],
+
+        ];
+    }
+
+    public function getId()
+    {
+        return $this->getPrimaryKey();
+    }
+
 }

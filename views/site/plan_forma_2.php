@@ -22,6 +22,22 @@ $this->params['breadcrumbs'][] = $this->title;
         'emptyText' => 'Нічого не знайдено',
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
+            [
+                /**
+                 * Указываем класс колонки
+                 */
+                'class' => \yii\grid\ActionColumn::class,
+                'buttons'=>[
+
+                    'update'=>function ($url, $model) use ($sql) {
+                        $customurl=Yii::$app->getUrlManager()->
+                        createUrl(['/site/update_plan','id'=>$model['id'],'mod'=>'update_plan','sql'=>$sql]);
+                        return \yii\helpers\Html::a( '<span class="glyphicon glyphicon-pencil"></span>', $customurl,
+                            ['title' => Yii::t('yii', 'Редагувати'), 'data-pjax' => '0']);
+                    }
+                ],
+                'template' => '{update} {delete}',
+            ],
             'projects',
             'plan_status',
             'year',

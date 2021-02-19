@@ -18,6 +18,7 @@ class A_diary extends Model
     public function attributeLabels()
     {
         return [
+            'id' => '',
             'date' => 'Дата записи',
             'txt' => 'Текст записи',
             'projects' => 'Название проекта',
@@ -28,7 +29,7 @@ class A_diary extends Model
     {
         return [
 
-            [['date','txt', 'projects', 'status','id_status',
+            [['id','date','txt', 'projects', 'status','id_status',
             ], 'safe'],
 
         ];
