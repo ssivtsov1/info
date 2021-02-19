@@ -7,6 +7,7 @@ use app\models\A_diary_search;
 use app\models\phones_sap;
 use app\models\phones_sap_search;
 use app\models\Plan;
+use app\models\Plan1;
 use app\models\plan_forma;
 use Yii;
 use yii\filters\AccessControl;
@@ -332,12 +333,14 @@ class SiteController extends Controller
     public function actionA_diary_forma()
     {
         $model = new A_diary();
+//        debug('nhgcnj');
+//        return;
         $searchModel = new A_diary_search();
 //    $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $sql);
 //        $model = $model::find()->all();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 //        debug('1111111111111');
-            $sql = "SELECT date,txt,projects,status
+            $sql = "SELECT id, date,txt,projects,status
 FROM vw_diary 
 where 1=1";
 //            if (!empty($model->txt)) {
@@ -383,6 +386,34 @@ where 1=1";
         }
     }
 
+    public function actionUpdate_plan ($id,$mod)
+    {
+        // $id  id записи
+        // $mod - название модели
+        if($mod=='update_plan')
+            $model = Plan1::findOne($id);
+
+        if ($model->load(Yii::$app->request->post()))
+        {
+
+            if(!$model->save())
+
+            {  $model->validate();
+                print_r($model->getErrors());
+                return;
+                var_dump($model);
+                return;}
+
+            if($mod=='update_plan')
+                return $this->redirect(['site/plan_forma']);
+
+        } else {
+            if($mod=='update_plan')
+                return $this->render('update_plan', [
+                    'model' => $model,
+                ]);
+        }
+    }
 
     public function actionPlan_forma()
     {
@@ -392,7 +423,7 @@ where 1=1";
 //        $model = $model::find()->all();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 //        debug('1111111111111');
-            $sql = "SELECT projects, plan_status, year, month, txt, speed
+            $sql = "SELECT id, projects, plan_status, year, month, txt, speed
 FROM vw_plans 
 where 1=1";
 

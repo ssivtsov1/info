@@ -7,27 +7,28 @@ use yii\base\Model;
 use yii\behaviors\TimestampBehavior;
 use yii\data\ActiveDataProvider;
 
-class A_diary_search extends \yii\db\ActiveRecord
+class Plan1 extends \yii\db\ActiveRecord
 {
     public static function tableName()
     {
-        return 'vw_diary';
+        return 'plan';
     }
 
     public function attributeLabels()
     {
         return [
-            'id' => '',
-            'date' => 'Дата записи',
-            'txt' => 'Текст записи',
-            'projects' => 'Название проекта',
-            'status' => 'Название статуса проекта',
+//            'projects' => 'Проект',
+            'plan_status' => 'Статус плана',
+            'year' => 'Год',
+            'month' => 'Месяц',
+            'txt' => 'План',
+            'speed' => 'Степень срочности',
         ];
     }
 
     public function search($params, $sql)
     {
-        $query = A_diary_search::findBySql($sql);
+        $query = Plan1::findBySql($sql);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -65,10 +66,15 @@ class A_diary_search extends \yii\db\ActiveRecord
     {
         return [
 
-            [['id','date','txt', 'projects', 'status','id_status',
+            [['id','plan_status', 'year', 'month','txt','speed',
             ], 'safe'],
 
         ];
+    }
+
+    public function getId()
+    {
+        return $this->getPrimaryKey();
     }
 
 }
