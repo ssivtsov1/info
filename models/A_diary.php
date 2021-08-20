@@ -9,7 +9,8 @@ use yii\base\Model;
 
 class A_diary extends Model
 {
-    public $date;
+    public $date1;
+    public $date2;
     public $txt;
     public $projects;
     public $status;
@@ -19,7 +20,8 @@ class A_diary extends Model
     {
         return [
             'id' => '',
-            'date' => 'Дата записи',
+            'date1' => 'Дата записи с' ,
+            'date2' => 'Дата записи по' ,
             'txt' => 'Текст записи',
             'projects' => 'Название проекта',
             'status' => 'Название статуса проекта',
@@ -29,8 +31,10 @@ class A_diary extends Model
     {
         return [
 
-            [['id','date','txt', 'projects', 'status','id_status',
+            [['id','date1','date2','txt', 'projects', 'status','id_status',
             ], 'safe'],
+//            [['date','txt', 'projects'
+//            ], 'required'],
 
         ];
     }

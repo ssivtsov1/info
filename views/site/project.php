@@ -9,17 +9,15 @@ use yii\grid\ActionColumn;
 use yii\grid\CheckboxColumn;
 use yii\grid\SerialColumn;
 
-//$this->title = 'Відключення у електромережах';
+$this->title = 'Довідник проектів';
 $this->params['breadcrumbs'][] = $this->title;
+echo Html::a('Додати', ['createproject'], ['class' => 'btn btn-success'])
 ?>
-<?= Html::a('Добавить', ['creatediary','sql'=>$sql],  ['class' => 'btn btn-success']) ?>
-&nbsp;
-<?= Html::a('Поиск', ['a_diary_forma'],  ['class' => 'btn btn-success']) ?>
 <div class="site-spr1">
 
     <h3><?= Html::encode($this->title) ?></h3>
     <?= GridView::widget([
-        'dataProvider' => $dataProvider,
+        'dataProvider' => $dataProvider1,
 //        'filterModel' => $searchModel,
         'summary' => false,
         'emptyText' => 'Нічого не знайдено',
@@ -32,15 +30,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => \yii\grid\ActionColumn::class,
                 'buttons'=>[
 
-                    'update'=>function ($url, $model) use ($sql) {
+                    'update'=>function ($url, $model)  {
                         $customurl=Yii::$app->getUrlManager()->
-                        createUrl(['/site/update_plan','id'=>$model['id'],'mod'=>'update_diary','sql'=>$sql]);
+                        createUrl(['/site/update_project','id'=>$model['id'],'mod'=>'update_project']);
                         return \yii\helpers\Html::a( '<span class="glyphicon glyphicon-pencil"></span>', $customurl,
                             ['title' => Yii::t('yii', 'Редагувати'), 'data-pjax' => '0']);
                     },
-                    'delete'=>function ($url, $model) use ($sql) {
+                    'delete'=>function ($url, $model)  {
                         $customurl=Yii::$app->getUrlManager()->
-                        createUrl(['/site/delete_rec','id'=>$model['id'],'mod'=>'diary','sql'=>$sql]); //$model->id для AR
+                        createUrl(['/site/delete_project','id'=>$model['id'],'mod'=>'delete_project']); //$model->id для AR
                         return \yii\helpers\Html::a( '<span class="glyphicon glyphicon-remove-circle"></span>', $customurl,
                             ['title' => Yii::t('yii', 'Видалити'),'data' => [
                                 'confirm' => 'Ви впевнені, що хочете видалити цей запис ?',
@@ -49,10 +47,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 'template' => '{update} {delete}',
             ],
-            'date',
+            'id',
             'txt',
-            'projects',
-            'status',
+            'status_pr',
         ],
     ]); ?>
 

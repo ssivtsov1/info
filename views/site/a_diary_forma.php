@@ -7,7 +7,8 @@ $arr = ['Выбор года','2018','2019'];
 <div class = 'test col-xs-3' >
     <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]) ?>
 
-    <?= $form->field($model, 'date')->label('Дата записи')  -> widget(\yii\jui\DatePicker::classname(), ['language' => 'uk']) ?>
+    <?= $form->field($model, 'date1')->label('Дата записи с')  -> widget(\yii\jui\DatePicker::classname(), ['language' => 'uk']) ?>
+    <?= $form->field($model, 'date2')->label('Дата записи по')  -> widget(\yii\jui\DatePicker::classname(), ['language' => 'uk']) ?>
 
     <?= $form->field($model, 'txt')->label('Текст записи')  -> textInput()  ?>
 
@@ -21,7 +22,9 @@ $arr = ['Выбор года','2018','2019'];
             ->all(), 'id', 'txt'),
         ['prompt' => 'Выбор статуса',]) ?>
 
-    <?= Html::submitButton('Надіслати',['class' => 'btn btn-success']) ?>
+    <?= Html::submitButton('ОК',['class' => 'btn btn-success']) ?>
+    <br>
+    <br>
 
     <?php ActiveForm::end() ?>
 </div>

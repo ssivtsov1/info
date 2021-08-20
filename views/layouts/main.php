@@ -39,8 +39,6 @@ AppAsset::register($this);
                     
                 ],
             ]);
-
-
                      echo Nav::widget([
                     'options' => ['class' => 'navbar-nav navbar-right'],
                     'items' => [
@@ -48,6 +46,13 @@ AppAsset::register($this);
                             'url' => ['/site/index']],
                         ['label' => 'Плани', 'url' => ['/site/plan_forma']],
                         ['label' => 'Щоденник', 'url' => ['/site/a_diary_forma']],
+                        ['label' => 'Довідники', 'url' => ['/site/index'],
+                            'options' => ['id' => 'down_menu'],
+                            'items' => [
+                                ['label' => 'Проекти', 'url' => ['/site/spr_project']],
+                                ['label' => 'Статуси проектів', 'url' => ['/site/spr_status_pr']],
+                                ['label' => 'Статуси планів', 'url' => ['/site/spr_status_pl']],
+                            ]],
                         ['label' => 'Телефони', 'url' => ['/site/phones_sap']],
                         ['label' => 'Про сайт', 'url' => ['/site/about']],
 

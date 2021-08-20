@@ -2,8 +2,10 @@
 use yii\widgets\ActiveForm;
 use yii\helpers\Html;
 use yii \ helpers \ ArrayHelper;
-$arr = ['Выбор года','2018','2019'];
+$arr = ['Выбор года','2018','2019','2020','2021'];
+$arr1 = ['Степень срочности','1','2','3','4','5','6','7','8','9','10'];
 ?>
+
 <div class = 'test col-xs-3' >
     <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]) ?>
 
@@ -27,19 +29,11 @@ $arr = ['Выбор года','2018','2019'];
             ->all(), 'id', 'month'),
         ['prompt' => 'Выбор месяца',]) ?>
 
-    <?= $form->field($model, 'txt')->label('План')  -> textInput() -> dropDownList (ArrayHelper::map(
-        app\models\plan::findbysql('
-       select id, txt from plan')
-            ->all(), 'id', 'txt'),
-        ['prompt' => 'Выбор плана',]) ?>
+    <?= $form->field($model, 'txt')->label('План')  -> textarea() ?>
+    <?= $form->field($model, 'speed')-> dropDownList ( $arr1 ) ?>
 
-    <?= $form->field($model, 'speed')->label('Степень срочности')  -> textInput() -> dropDownList (ArrayHelper::map(
-        app\models\plan::findbysql('
-       select id, speed from vw_plans group by id,speed')
-            ->all(), 'id', 'speed'),
-        ['prompt' => 'Выбор степени срочности',]) ?>
-
-    <?= Html::submitButton('Надіслати',['class' => 'btn btn-success']) ?>
-
+    <?= Html::submitButton('OK',['class' => 'btn btn-success']) ?>
+    <br>
+    <br>
     <?php ActiveForm::end() ?>
 </div>

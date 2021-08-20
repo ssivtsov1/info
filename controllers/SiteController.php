@@ -5,11 +5,25 @@ namespace app\controllers;
 
 use app\models\A_diary;
 use app\models\A_diary_search;
+use app\models\Klient;
 use app\models\phones_sap;
 use app\models\phones_sap_search;
 use app\models\Plan;
+use app\models\diary;
+use app\models\project;
+use app\models\project1;
+use app\models\status_project;
+use app\models\status_plan;
 use app\models\Plan1;
 use app\models\plan_forma;
+use app\models\searchklient;
+use app\models\Spr_brig;
+use app\models\Spr_res;
+use app\models\Spr_res_koord;
+use app\models\Spr_uslug;
+use app\models\Spr_work;
+use app\models\Sprtransp;
+use app\models\Status_sch;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -72,6 +86,7 @@ class SiteController extends Controller
 
     public function actions()
     {
+
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
@@ -331,34 +346,42 @@ class SiteController extends Controller
 
 //Щеденники
 
-    public function actionA_diary_forma()
+    public function actionA_diary_forma($sql='0')
     {
+        if ($sql == '0') {
         $model = new A_diary();
 //        debug('nhgcnj');
 //        return;
+
         $searchModel = new A_diary_search();
+
 //    $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $sql);
 //        $model = $model::find()->all();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-//        debug('1111111111111');
-            $sql = "SELECT id, date,txt,projects,status
+
+                $sql = "SELECT id, date,txt,projects,status
 FROM vw_diary 
 where 1=1";
-//            if (!empty($model->txt)) {
-//                $sql2 = '(select txt from plan where id ='. $model->txt.')';
-//                $model->txt = $sql2;
-//                $sql = $sql . ' and txt =' . $model->txt  ;
-//            }
-//        debug($sql);
-//        return;
-            if (!empty($model->projects)) {
-                $sql = $sql . ' and id_project =' . "'" . $model->projects . "'";
+                if (!empty($model->txt)) {
+                    $sql = $sql . ' and txt like ' . "'%" . $model->txt . "%'";
+                }
+
+                if (!empty($model->date1)) {
+                    $sql = $sql . ' and date>=' . "'" . $model->date1 . "'";
+                }
+            if (!empty($model->date2)) {
+                $sql = $sql . ' and date<=' . "'" . $model->date2 . "'";
             }
 //        debug($sql);
 //        return;
-            if (!empty($model->status)) {
-                $sql = $sql . ' and id_status =' . "'" . $model->status . "'";
-            }
+                if (!empty($model->projects)) {
+                    $sql = $sql . ' and id_project =' . "'" . $model->projects . "'";
+                }
+//        debug($sql);
+//        return;
+                if (!empty($model->status)) {
+                    $sql = $sql . ' and id_status =' . "'" . $model->status . "'";
+                }
 //                debug($sql);
 //        return;
 //            if (!empty($model->year)) {
@@ -370,29 +393,142 @@ where 1=1";
 //            }
 ////                        debug($sql);
 ////        return;
-            $sql = $sql . ' ORDER BY 3';
+                $sql = $sql . ' ORDER BY 2 DESC';
 //            debug($sql);
 //            return;
 //            $data = Off_site::findbysql($sql)->asArray()
 //                ->all();
-            $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $sql);
-//            debug($sql);
+                $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $sql);
+
+//            debug($dataProvider);
 //            return;
+
+                $dataProvider->pagination = false;
+                return $this->render('a_diary_forma_2', [
+                    'model' => $searchModel, 'dataProvider' => $dataProvider, 'searchModel' => $searchModel,
+                    'sql' => $sql
+                ]);
+            } else {
+                return $this->render('a_diary_forma', compact('model'));
+            }
+        }
+        else
+        {
+            // Если передается параметр $sql
+            $searchModel = new diary();
+
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $sql);
             $dataProvider->pagination = false;
+
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $sql);
+
             return $this->render('a_diary_forma_2', [
-                'model' => $searchModel,'dataProvider' => $dataProvider,'searchModel' => $searchModel,
+                'dataProvider' => $dataProvider,'searchModel' => $searchModel,
+                'sql' => $sql
             ]);
-        } else {
-            return $this->render('a_diary_forma', compact('model'));
+
         }
     }
 
-    public function actionUpdate_plan ($id,$mod)
+    public function actionUpdate_project ($id,$mod)
+    {
+        // $id  id записи
+        // $mod - название модели
+        if($mod=='update_project')
+            $model = Project1::findOne($id);
+
+        if ($model->load(Yii::$app->request->post()))
+        {
+//            debug($model);
+//            return;
+
+            if(!$model->save())
+
+            {  $model->validate();
+                print_r($model->getErrors());
+                return;
+                var_dump($model);
+                return;}
+
+            if($mod=='update_project')
+                return $this->redirect(['site/spr_project']);
+
+        } else {
+            if($mod=='update_project')
+                return $this->render('update_project', [
+                    'model' => $model,
+                ]);
+        }
+    }
+
+    public function actionUpdate_status_project ($id,$mod)
+    {
+        // $id  id записи
+        // $mod - название модели
+        if($mod=='update_project')
+            $model = Status_project::findOne($id);
+
+        if ($model->load(Yii::$app->request->post()))
+        {
+//            debug($model);
+//            return;
+
+            if(!$model->save())
+
+            {  $model->validate();
+                print_r($model->getErrors());
+                return;
+                var_dump($model);
+                return;}
+
+            if($mod=='update_project')
+                return $this->redirect(['site/spr_status_pr']);
+
+        } else {
+            if($mod=='update_project')
+                return $this->render('update_status_project', [
+                    'model' => $model,
+                ]);
+        }
+    }
+
+    public function actionUpdate_status_plan ($id,$mod)
+    {
+        // $id  id записи
+        // $mod - название модели
+        if($mod=='update_project')
+            $model = Status_plan::findOne($id);
+
+        if ($model->load(Yii::$app->request->post()))
+        {
+            if(!$model->save())
+
+            {  $model->validate();
+                print_r($model->getErrors());
+                return;
+                var_dump($model);
+                return;}
+
+            if($mod=='update_project')
+                return $this->redirect(['site/spr_status_pl']);
+
+        } else {
+            if($mod=='update_project')
+                return $this->render('update_status_plan', [
+                    'model' => $model,
+                ]);
+        }
+    }
+
+
+    public function actionUpdate_plan ($id,$mod,$sql)
     {
         // $id  id записи
         // $mod - название модели
         if($mod=='update_plan')
             $model = Plan1::findOne($id);
+        if($mod=='update_diary')
+            $model = diary::findOne($id);
 
         if ($model->load(Yii::$app->request->post()))
         {
@@ -406,18 +542,25 @@ where 1=1";
                 return;}
 
             if($mod=='update_plan')
-                return $this->redirect(['site/plan_forma']);
+                return $this->redirect(['site/plan_forma','sql' => $sql]);
+            if($mod=='update_diary')
+                return $this->redirect(['site/a_diary_forma','sql' => $sql]);
 
         } else {
             if($mod=='update_plan')
                 return $this->render('update_plan', [
                     'model' => $model,
                 ]);
+            if($mod=='update_diary')
+                return $this->render('update_diary', [
+                    'model' => $model,
+                ]);
         }
     }
 
-    public function actionPlan_forma()
+    public function actionPlan_forma($sql='0')
     {
+        if($sql=='0') {
         $model = new Plan_forma();
         $searchModel = new Plan();
 //    $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $sql);
@@ -425,10 +568,9 @@ where 1=1";
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 //        debug('1111111111111');
 
-            $sql = "SELECT projects, plan_status, year, month, txt, speed
+            $sql = "SELECT id,projects, plan_status, year, month, txt, speed,status
             FROM vw_plans 
             where 1=1";
-
 
             if (!empty($model->projects)) {
                 $sql = $sql . ' and id_project =' . "'" . $model->projects . "'";
@@ -466,7 +608,7 @@ where 1=1";
             }
 //        debug($sql);
 //        return;
-            $sql = $sql . ' ORDER BY 1';
+            $sql = $sql . ' ORDER BY year desc,month desc';
 //            debug($model);
 //            return;
 //            $data = Off_site::findbysql($sql)->asArray()
@@ -474,18 +616,190 @@ where 1=1";
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $sql);
 //            debug($sql);
 //            return;
-            $dataProvider->pagination = false;
+
+            $dataProvider->pagination->pageSize=4000;
+
             return $this->render('plan_forma_2', [
-                'model' => $searchModel,'dataProvider' => $dataProvider,'searchModel' => $searchModel,
+               'dataProvider' => $dataProvider,'searchModel' => $searchModel,
+                'sql' => $sql
             ]);
         } else {
             return $this->render('plan_forma', compact('model'));
 
         }
+        }
+        else {
+            // Если передается параметр $sql
+//            $data = Plan::findBySql($sql)->all();
+            $searchModel = new Plan();
+
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $sql);
+            $dataProvider->pagination = false;
+
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $sql);
+
+            return $this->render('plan_forma_2', [
+                'dataProvider' => $dataProvider,'searchModel' => $searchModel,
+                'sql' => $sql
+            ]);
+
+            }
+    }
+
+    //    Срабатывает при нажатии кнопки добавления в планах
+    public function actionCreateplan($sql)
+    {
+        $model = new Plan1();
+        if ($model->load(Yii::$app->request->post()))
+        {
+
+//            $brig=spr_brig::findbysql('select nazv from spr_brig where id='.$model->brig)->all();
+//            $model->brig = $brig[0]->nazv;
+//            $usl=spr_uslug::findbysql('select kod,usluga from spr_uslug where id='.$model->usluga)->all();
+//            $model->usluga = $usl[0]->usluga;
+//            $model->kod_uslug = $usl[0]->kod;
+//            if($model->cast_1==null) $model->cast_1 = 0;
+//            if($model->cast_2==null) $model->cast_2 = 0;
+//            if($model->cast_3==null) $model->cast_3 = 0;
+//            if($model->cast_4==null) $model->cast_4 = 0;
+            $model->date = date('Y-m-d');
+
+            if($model->save(false))
+                return $this->redirect(['site/plan_forma','sql'=>$sql]);
+
+        } else {
+
+            return $this->render('update_plan', [
+                'model' => $model]);
+        }
+    }
+
+    //    Срабатывает при нажатии кнопки добавления в дневнике
+    public function actionCreatediary($sql)
+    {
+        $model = new diary();
+        if ($model->load(Yii::$app->request->post()))
+        {
+//            $model->date = date('Y-m-d');
+            if($model->save(false))
+                return $this->redirect(['site/a_diary_forma','sql'=>$sql]);
+        } else {
+            return $this->render('update_diary', [
+                'model' => $model]);
+        }
+    }
+
+    //    Срабатывает при нажатии кнопки добавления в проектах
+    public function actionCreateproject()
+    {
+        $model = new Project1();
+        if ($model->load(Yii::$app->request->post()))
+        {
+            if($model->save(false))
+                return $this->redirect(['site/spr_project']);
+        }
+        else
+            {
+            return $this->render('update_project', [
+                'model' => $model]);
+        }
+    }
+
+    //    Срабатывает при нажатии кнопки добавления в статусы проекта
+    public function actionCreatestatusproject()
+    {
+        $model = new Status_project();
+        if ($model->load(Yii::$app->request->post()))
+        {
+            if($model->save(false))
+                return $this->redirect(['site/spr_status_pr']);
+        }
+        else
+        {
+            return $this->render('update_status_project', [
+                'model' => $model]);
+        }
+    }
+
+    //    Срабатывает при нажатии кнопки добавления в статусы планов
+    public function actionCreatestatusplan()
+    {
+        $model = new Status_plan();
+        if ($model->load(Yii::$app->request->post()))
+        {
+            if($model->save(false))
+                return $this->redirect(['site/spr_status_pl']);
+        }
+        else
+        {
+            return $this->render('update_status_plan', [
+                'model' => $model]);
+        }
     }
 
 
+    //    Удаление записей
+    public function actionDelete_rec($id,$mod,$sql='')
+    {   // $id  id записи
+        // $mod - название модели
+        if($mod=='plan')
+            $model = plan1::findOne($id);
+        if($mod=='diary')
+            $model = diary::findOne($id);
 
+        $model->delete();
+
+        if($mod=='plan') {
+            return $this->redirect(['site/plan_forma', 'sql' => $sql]);
+        }
+        if($mod=='diary') {
+                return $this->redirect(['site/a_diary_forma', 'sql' => $sql]);
+        }
+
+    }
+
+    //    Удаление записей
+    public function actionDelete_project($id,$mod)
+    {   // $id  id записи
+        // $mod - название модели
+        if($mod=='delete_project')
+            $model = project1::findOne($id);
+
+        $model->delete();
+
+        if($mod=='delete_project') {
+            return $this->redirect(['site/spr_project']);
+        }
+
+    }
+
+    //    Удаление записей из справочника статусов проекта
+    public function actionDelete_status_project($id,$mod)
+    {   // $id  id записи
+        // $mod - название модели
+        if($mod=='delete_project')
+            $model = Status_project::findOne($id);
+
+        $model->delete();
+
+        if($mod=='delete_project') {
+            return $this->redirect(['site/spr_status_pr']);
+        }
+    }
+
+    //    Удаление записей из справочника статусов планов
+    public function actionDelete_status_plan($id,$mod)
+    {   // $id  id записи
+        // $mod - название модели
+        if($mod=='delete_project')
+            $model = Status_plan::findOne($id);
+
+        $model->delete();
+
+        if($mod=='delete_project') {
+            return $this->redirect(['site/spr_status_pl']);
+        }
+    }
 
     public function actionPhones_sap()
     {
@@ -540,6 +854,46 @@ where 1=1";
         } else {
             return $this->render('phones_sap', compact('model'));
         }
+    }
+
+    // Справочник проектов
+    public function actionSpr_project()
+    {
+        $searchModel = new Project();
+        $sql = "SELECT * FROM vw_project order by id";
+        $dataProvider1 = $searchModel->search(Yii::$app->request->queryParams,$sql);
+        $dataProvider1->pagination = false;
+//        $dataProvider1->setSort([
+//            'attributes' => [
+//                'id',
+//            ]
+//        ]);
+
+        return $this->render('project', [
+            'model' => $searchModel,'dataProvider1' => $dataProvider1,'searchModel' => $searchModel,
+        ]);
+    }
+
+    // Справочник статусов проектов
+    public function actionSpr_status_pr()
+    {
+        $searchModel = new Status_project();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('status_project', [
+            'model' => $searchModel,'dataProvider' => $dataProvider,'searchModel' => $searchModel,
+        ]);
+    }
+
+    // Справочник статусов планов
+    public function actionSpr_status_pl()
+    {
+        $searchModel = new Status_plan();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('status_plan', [
+            'model' => $searchModel,'dataProvider' => $dataProvider,'searchModel' => $searchModel,
+        ]);
     }
 
 

@@ -7,28 +7,25 @@ use yii\base\Model;
 use yii\behaviors\TimestampBehavior;
 use yii\data\ActiveDataProvider;
 
-class Plan1 extends \yii\db\ActiveRecord
+class Project extends \yii\db\ActiveRecord
 {
     public static function tableName()
     {
-        return 'plan';
+        return 'vw_project';
     }
 
     public function attributeLabels()
     {
         return [
-//            'projects' => 'Проект',
-            'plan_status' => 'Статус плана',
-            'year' => 'Год',
-            'month' => 'Месяц',
-            'txt' => 'План',
-            'speed' => 'Степень срочности',
+            'id' => 'ID',
+            'status_pr' => 'Статус проекта',
+            'txt' => 'Проект',
         ];
     }
 
-    public function search($params, $sql)
+    public function search($params,$sql)
     {
-        $query = Plan1::findBySql($sql);
+        $query = Project::findBySql($sql);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -41,7 +38,7 @@ class Plan1 extends \yii\db\ActiveRecord
         //    'work' => $this->work,
         // ]);
 
-//        $query->andFilterWhere(['like', 'work', $this->work]);
+//        $query->andFilterWhere(['like', 'txt', $this->txt]);
 //        $query->andFilterWhere(['like', 'usluga', $this->usluga]);
 //        $query->andFilterWhere(['=', 'stavka_grn', $this->stavka_grn]);
 //        $query->andFilterWhere(['=', 'time_transp', $this->time_transp]);
@@ -66,7 +63,7 @@ class Plan1 extends \yii\db\ActiveRecord
     {
         return [
 
-            [['id','plan_status', 'year', 'month','txt','speed',
+            [['id','projects','plan_status', 'year', 'month','txt','speed','status'
             ], 'safe'],
 
         ];
